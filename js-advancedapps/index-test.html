@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <!-- <script src="src/app.js"></script>
+    <script src="src/calculate.js"></script>
+    <script src="src/add.js"></script>
+    <script src="src/thirdparty.js"></script>
+    <script src="src/main.js"></script> -->
+    <!-- <script src="src/main.js"></script> -->
+    <!-- <script data-main="src/main" src="src/require.js"></script> -->
+    <!-- <script src="src/index.js"></script> -->
+    <input type="button" id="btn" value="click">
+    <script>
+        var counter = 2;
+        var myvar;
+        var foo = function () {
+            for (var i = 0; i < 100000; i++) {
+                myvar += 'abc'
+
+            }
+        }
+        document.getElementById('btn').addEventListener('click',function(){
+            foo()
+        })
+    </script>
+
+</body>
+
+</html>

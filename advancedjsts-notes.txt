@@ -1,0 +1,1778 @@
+Object:
+
+ Views
+
+ 1.Real world:
+    Every thing is object but it should be in problem domain.
+
+
+ 2.sofware :
+
+    1.Design :
+        High level : UML
+        Low level : pl -classes
+
+   pl :
+     Object :memory representation
+
+Program : collection of instruction(data +how to manipulate)
+Types of program:
+
+ 1.passive
+   ->which is not in ram(main) /cpu register
+   ->Some code which is in ram but not accessed by cpu.
+ 2.active
+    ->code which is in ram,and cpu access the instructions at present.
+
+   process   : active instructions
+
+Note: any thing in ram /active instructions which must have layout(structure).
+
+Process layout:
+
+heap : for allcating memory of data during execution : active
+
+stack:
+
+
+class Sample{
+  int x;
+
+  public void increment(){
+      int result = this.x + 1
+  }
+  public void increment(){
+      int result = this.x - 1
+  }
+
+
+}
+
+Sample s= new Sample()
+s.increment()
+s.decrement()
+
+Async programming concept and implmentation;
+
+What is sync?
+
+s.increment()---->stack--->frame--running--completed
+s.decrement()---->stack--->frame--running--completed
+
+while running one frame,others waiting.
+
+what if i want run all the frames at the same time:
+
+ -multi threading. : conncurrency implementation.
+
+Does js support multi frame architecture (multi threading?
+
+ No!.
+How js achives concurrency?
+
+
+js engine:
+
+ ->standalone and embeded mode.
+
+standalone : nodejs
+embeded mode: browsers
+
+js eninge is prg written in c/c++.
+
+types of engines:
+1.v8 - google , c++ :chrome and nodejs.
+2.spider monkey : firefox
+3.chakra : ms edge,ie.
+
+
+function increment(){
+}
+
+function decrement(){
+
+}
+
+increment();
+
+
+in js every thing object including code.
+
+In js code is packed inside one single object called Env/context.
+
+var context = {
+
+ code....
+
+function increment(){
+}
+
+function decrement(){
+
+}
+
+
+}
+
+context.increment()===increment()---->stack---->stack framework-->running
+
+Phases in js code :
+
+1.initlization /creation
+2.activation/invocation
+
+
+
+Thread islation from main process:
+
+dont create thread by js engine rather than , isloate threads, offload threads from js engine to os kernal. : Worker thread model/Reactor design pattern
+
+Async apis;
+
+javascript provides async low level and high level in built api, through which only you can 
+achive async/non blocking.
+
+
+hello()------->Stack---decision --hello is non blocking or blocking|
+ 
+low level apis are provided by libuv lib in nodejs and in browser , every browser vendors
+provide low level apis we called "browser api".
+
+
+Common api to implement async :
+
+1.timers
+  setTimeout
+2.networking
+   ajax
+   websocket
+
+Node api
+
+1.IO file operations
+2.Networking
+
+
+Steps to implement async/nonblocking:
+
+1.call back
+2.promises
+3.async /await
+
+
+
+js : literals(values).
+string,number,boolean,undefined,nan,infinity,null,function,object
+
+js object based,event driven,functional style.
+
+object based vs object oriented.
+
+oo has 7 principles, the which language which implements min first 5 principles those languages called as oo language., if any one of principle not implemented or paritally implemented those languages called object based
+
+
+pure functional programming vs functional style:
+
+if language does not implement all functional programming principles , those languages are called "functional style".
+
+lamda calculs,functional programming principles.
+
+
+according to functional programming, functions are literals.
+
+
+function literals can be assinged to a variable,returned from other function, passed as arg to other function.
+
+
+if you want to implement asyn programming:
+
+1.function should be passed as parameter(callback)
+2.that funciton must be assiocated high level async api.
+
+
+//function literals : functional style programming
+
+let hai = function (name) {
+  //  console.log(`Name ${name}`);
+  return `Name ${name}`;
+};
+console.log(hai('subramanaian'));
+
+//arrow function
+let hello = name => {
+  console.log(`Hello ${name}`)
+}
+hello('Ram');
+//////////////////////////////////////////////////////////////////////////////////
+
+//passing function as parameter to another function
+
+let sayHello = function (greet) {
+  greet()
+}
+
+sayHello(function () {
+  console.log('Hello')
+});
+
+let mygreet = function () {
+  console.log('mygreet')
+}
+sayHello(mygreet)
+
+let stockValue = produce => {
+  produce();
+}
+stockValue(() => console.log('stock value function'))
+
+
+
+const getUser = (resolve, reject) => {
+    let fakeuser = 'adminxx';
+    //let fakeuser
+    if (fakeuser) {
+        setTimeout(() => {
+            resolve(fakeuser)
+        }, 100);
+    } else {
+        setTimeout(() => {
+            reject('No user found')
+        }, 100);
+    }
+};
+
+const login = (user, resolve, reject) => {
+
+    if (user === 'admin') {
+        setTimeout(() => {
+            resolve(user)
+        }, 200);
+    } else {
+        setTimeout(() => {
+            reject('login failed')
+        }, 100);
+    }
+
+}
+
+const adminPanel = user => console.log(`Welcome to ${user}`)
+const errPanel = err => console.log(err)
+
+getUser(user => {
+    login(user, user => adminPanel(user), err => errPanel(err))
+}, err => console.log(err)); 
+
+Questions:
+
+1.Whether this code is able to understand quickly
+2.Whether this code is able to debug
+3.Whehter this code is scalable?
+4.whether this code is maintaiable?
+
+
+  "No" : This is what we call as "Callback hell".
+
+fs.readdir(source, function (err, files) {
+  if (err) {
+    console.log('Error finding files: ' + err)
+  } else {
+    files.forEach(function (filename, fileIndex) {
+      console.log(filename)
+      gm(source + filename).size(function (err, values) {
+        if (err) {
+          console.log('Error identifying file size: ' + err)
+        } else {
+          console.log(filename + ' : ' + values)
+          aspect = (values.width / values.height)
+          widths.forEach(function (width, widthIndex) {
+            height = Math.round(width / aspect)
+            console.log('resizing ' + filename + 'to ' + height + 'x' + height)
+            this.resize(width, height).write(dest + 'w' + width + '_' + filename, function(err) {
+              if (err) console.log('Error writing file: ' + err)
+            })
+          }.bind(this))
+        }
+      })
+    })
+  }
+})
+callback is other wise called as doom of pyrbid.
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+How to write better callback programming? or How to avoid callback hell?
+
+
+In 2005, JQUERY team started with working complex callback patterns, they found callback
+hell problem.
+
+They proposed a  Design pattern to write better callback programming(Async) programming.
+
+  "Promise".
+
+
+Promise is design pattern which hides complexity of callback patterns
+
+
+SInce Promise is design pattern, many people have implemented Promise design pattern.
+
+1.JQuery -first promise implementation
+2.many libs and frameworks
+
+2012 E6 Commit introduced Promise as Object in javascript
+
+features of Promise Object:
+
+1.Promise by deafult is Async. Which implements timer api with 0 ms .
+
+Promise can be used with any async implementations.
+
+
+Promise ES 6 implementation:
+
+IN ES 6 promise Object.
+
+Promise object creation:
+
+1.using constructors
+2.using factory apis - Promise.resolve=Promise
+
+
+Promise object has api:
+
+1.promise.then
+2.promise.catch
+3.finally
+
+
+Nested Promise===callback chain:
+.................................
+
+
+function getAccumlator() {
+    return Promise.resolve(1)
+}
+
+getAccumlator()
+    .then(value => Promise.resolve(value))
+    .then(value => Promise.resolve(value * 2))
+    .then(value => Promise.resolve(value * 2))
+    .then(value => Promise.resolve(value * 2))
+    .then(value => console.log(value))
+    .catch(err=console.log(err))
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+Promise.all
+
+Let’s say we want many promises to execute in parallel and wait until all of them are ready.
+
+For instance, download several URLs in parallel and process the content once they are all done.
+The syntax is:
+
+let promise = Promise.all([...promises...]);
+
+Promise.all([
+    new Promise(resolve => setTimeout(() => resolve(1), 3000)), // 1
+    new Promise(resolve => setTimeout(() => resolve(2), 2000)), // 2
+    new Promise(resolve => setTimeout(() => resolve(3), 1000))  // 3
+]).then(r => console.log(r)); 
+
+
+Promise.race
+Similar to Promise.all, but waits only for the first settled promise and gets its result (or error).
+
+Promise.race([
+    new Promise((resolve, reject) => setTimeout(() => resolve(1), 1000)),
+    new Promise((resolve, reject) => setTimeout(() => reject(new Error("Whoops!")), 2000)),
+    new Promise((resolve, reject) => setTimeout(() => resolve(3), 3000))
+]).then(console.log); // 1
+
+
+Drawbacks in promises:
+
+1.Promise are readable soultion for complex callback patterns.
+  but it will introduce again code complexity with thenable statements.
+
+
+ES 7 Proposed new soultion called :async await
+
+Abstraction for promises.
+
+async function getValue(){
+
+    return 10;// by default async function return promise : return Promise.resolve(10)
+}
+
+
+
+
+
+async function getValue() {
+    return 10; //Promise.resolve(10) 
+}
+getValue().then(console.log);
+
+async function getError() {
+    return Promise.reject('error')
+}
+getError().catch(console.log)
+///////////////////////////////////////////////////////////////////////////////
+function getName() {
+    return Promise.resolve('Subramanian');
+}
+function getLikes() {
+    return Promise.resolve(10);
+}
+function getScore(likes) {
+    let totalLikes = likes * 2;
+    return Promise.resolve(totalLikes);
+}
+function getError() {
+    return Promise.reject('Something is wrong')
+}
+//how to abstract thenables
+async function process() {
+    try {
+        let name = await getName()
+        let likes = await getLikes()
+        //output of getLikes will be in input to the getScore
+        let totalScores = await getScore(likes);
+        let foo = getError();
+        console.log(`${name} ${likes} ${totalScores}`);
+    }
+    catch (err) {
+        console.log(err)
+    }
+}
+process()
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+
+Module design patterns:
+
+1.how to break app into multiple files
+2.after breaking how to share code among files.
+
+
+JS ;
+1. has no language level modular design for file loading ,linking , sharing
+
+2.Javascript engine provides simple loader which can load one .js file at a time.
+
+3.If file has linking with other file,that also should be loaded separtly.
+
+How to solve this issue?
+
+Via module design patterns.
+
+1.Namespace design pattern : which is core design pattern helps to organize code sharing only
+ 
+ ->how to encapsulate the code
+ which uses js core concept called "literal object/iife)"
+
+2.AMD
+
+3.CJS
+
+4.ES 6 Module design pattern
+
+5.System
+
+6.UMD
+
+
+Implementation:
+1.using vannila js patterns
+
+Pattern 1: writing js inside html using script tag.
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+        function add(a, b) {
+            return a + b;
+        }
+
+        function calculate(a, b) {
+            return add(a, b);
+        }
+
+        function main() {
+            var result = calculate(10, 10);
+            console.log("Add", result)
+        }
+        main();
+    </script>
+</head>
+
+<body>
+    <h1>Javascript Modules-Pattern 1</h1>
+</body>
+
+How to modularize the code?
+
+write in a separte file
+
+Pattern 2: writing js in a file and link inside html using script tag.
+
+add.js
+function add(a, b) {
+    return a + b;
+}
+calculate.js
+function calculate(a, b) {
+    return add(a, b);
+}
+
+index.js
+function main() {
+    var result = calculate(10, 10);
+    console.log("Add", result)
+}
+main();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="src/add.js"></script>
+    <script src="src/calculate.js.js"></script>
+    <script src="src/main.js"></script>
+
+</body>
+</html>
+
+Problems in the pattern:
+
+1.all files must be included manually through script.
+2.order changed the application will be broken.
+3.scope.
+
+in general, in js , in browser if you declare code inside .js file, will be available globally
+ "global scope"
+
+
+ 
+index.js
+function add(a, b) {
+    return a + b;
+}
+calculate.js
+function calculate(a, b) {
+    return add(a, b);
+}
+thirdparty.js
+function add(a, b) {
+    return a * b;
+}
+index.js
+function main() {
+    var result = calculate(10, 10);
+    console.log("Add", result)
+}
+main();
+
+Pros and cons:
+Pros:
+code has been separated
+
+cons:
+1.we need to link files manually
+2.code mixing.
+
+
+Pattern 4: Dawn of Module Design Patterns
+1.Global Variable/Namespace design pattern
+
+As per design pattern:
+
+1.code must be encapulated inside a namespace
+  ->Namespace is implemented via "Literal objects"
+app.js
+var MyApp = {
+
+};
+add.js
+MyApp.add = function (a, b) {
+    return a + b;
+};
+calcuate.js
+MyApp.calculate = function (a, b) {
+    return MyApp.add(a, b);
+};
+index.js
+function main() {
+    var result = MyApp.calculate(10, 10);
+    console.log("Add", result)
+}
+main();
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="src/app.js"></script>
+    <script src="src/calculate.js"></script>
+    <script src="src/add.js"></script>
+    <script src="src/thirdparty.js"></script>
+    <script src="src/main.js"></script>
+
+</body>
+</html>
+cons:
+File Linking:
+   Files must be linked/refered in index.html manually.
+
+Enterprise Javascript Application Modularity Design patterns:
+.............................................................
+1.AMD
+2.CommonJS -CJS
+3.ES 6 Modules
+4.System
+5.UMD
+
+1.Asynchronous module definition
+ ->Spec , talks about how to link files and how to share code.
+
+We need to modularize our code based on amd theory.
+
+AMD proposes keywords
+1.define
+2.require
+
+define is a function which encapulates our code and dependencies
+
+add.js
+define([], function () {
+    return function add(a, b) {
+        return a + b;
+    }
+})
+
+calculate.js
+define(['./add'], function (add) {
+    return function calculate(a, b) {
+        return add(a, b);
+    }
+})
+main.js
+require(["./calculate"], function (calculate) {
+    var result = calculate(10, 10);
+    console.log(result);
+});
+<script data-main="src/main" src="src/require.js"></script>
+...........................................................................................
+
+CONS OF amd:
+
+1.biz logic  + encapultion is complex.
+2.you can encapuslate code inside single function only
+
+focus only app code.
+
+CJS : Common js
+
+exports
+modules.exports
+require
+
+here :
+code can be packed inside object
+code can be packed inside fuction
+but both are hidden.
+
+exports ===packs code inside object meaning  == namespace
+module.exports = packs code insid single function return the same===define
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+Task:
+
+ui.js
+
+
+backend.js
+
+function  getContent(){
+
+
+}
+
+export the function.
+
+This function should a read file, returns content to ui.
+
+Soultion Apporach:
+1.Use callback pattern
+2.Convert callback pattern into Promise
+
+In ui:
+in case of callback, you need to pass callbacks to handle result.
+in case of promise think?
+incase of async await think?
+
+Solution:
+const getContent = require('./backend');
+
+//callback version
+function fetch() {
+    getContent('./src/hello.txt', err => console.log(err), res => console.log(res))
+}
+
+//promise version
+// function fetch() {
+//     getContent('./src/hello.txt')
+//         .then(console.log)
+//         .catch(console.log)
+//         .finally(_ => console.log('file operation done'))
+// }
+
+//async and await
+async function fetch() {
+    const res = await getContent('./src/hello.txt')
+    console.log(res);
+}
+
+fetch()
+
+
+const fs = require('fs');
+
+//callback version
+// function getContent(fileName, resolve, reject) {
+//     fs.readFile(fileName, "utf-8", (err, data) => {
+//         err ? reject(err) : resolve(data);
+//     });
+// }
+
+//promise version
+function getContent(fileName) {
+    return new Promise(function (resolve, reject) {
+        fs.readFile(fileName, "utf-8", (err, data) => {
+            err ? reject(err) : resolve(data);
+        });
+    });
+}
+module.exports = getContent;
+
+Think : how to run commonjs in browsers:http://browserify.org/
+////////////////////////////////////////////////////////////////////////////////////////////
+ES 6 modules:
+
+AMD + COMMONJS
+
+export  ==exports===Namespace
+export default ==module.exports==define
+import =require
+
+import {name,city,sayHello} from './mynewlib'
+import Customer from './Customer';
+
+console.log(name,city,sayHello)
+new Customer();
+
+
+
+export default class Customer {
+    constructor() {
+        console.log('customer')
+    }
+}
+
+Note:
+
+TS Compiler converts any module into another module.
+............................................................................................
+
+Scope,Prototype:
+................
+
+Scope: visibility of variables ,where it is visible
+        
+
+when visibility of a variable is activated.
+
+   during initalization/creation or execution time/activation?
+
+
+Three scopes in general: Based on variable binding
+1.static scope /Lexical scope
+2.dynamic scope
+3.Augmented scope - deprecated
+
+
+1.static scope:
+
+Static scope
+Definition 1: Static scope: a language implements static scope, if only by looking at the source code one can determine in which environment a binding is resolved.
+
+static scope is other wise is called lexcial scope 
+
+Environment:
+	Every execution context has an associated lexical environment.
+
+Lexical environment: A lexical environment is a structure used to define association between identifiers appearing in the context with their values. 
+ Each environment can have a reference to an optional parent environment.
+
+So an environment is a storage of variables, functions, and classes defined in a scope.
+
+Execution context:
+To execute JS code and track its runtime evaluation, ECMAScript spec defines the concept of an execution context. Logically execution contexts are maintained using a stack (the execution context stack as we will see shortly), which corresponds to the generic concept of a call-stack.
+
+Execution context: An execution context is a specification device that is used to track the runtime evaluation of the code.
+
+There are several types of ECMAScript code: the global code, function code, eval code, and module code; each code is evaluated in its execution context.
+
+
+Structure of Environent:
+
+Technically, an environment is a pair, consisting of an environment record (an actual storage table which maps identifiers to values), and a reference to the parent (which can be null).
+
+
+
+Structure of Environent:
+
+Technically, an environment is a pair, consisting of an environment record (an actual storage table which maps identifiers to values), and a reference to the parent (which can be null).
+
+eg code :
+
+let x = 10;
+let y = 20;
+ 
+function foo(z) {
+  let x = 100;
+  return x + y + z;
+}
+ 
+foo(30); // 150
+
+
+
+How to implement static scope /lexical scope?
+
+//static scope
+
+var a = 10;
+var b = 20;
+
+function foo() {
+    var a = 100;
+    console.log(`foo ${a}`);
+    function bar() {
+        var a = 200;
+        console.log(`bar ${a}`);
+        console.log(`b ${b}`);
+    }
+    bar();
+}
+foo();
+...............................&&&&&&&&&&&&.............................................
+
+
+Dynamic scope: Variable binding:
+
+The dynamic scope specifically for variables is not widely used on practice today.
+
+Definition : 
+   Dynamic scope: a language implements dynamic scope, 
+	if a "caller" defines an activation environment of a "callee".
+
+caller =>Object
+callee =>function
+
+How to implement dynamic binding in js?
+   
+   "this" keyword.
+  
+
+Defintion:
+ This value:
+    in JavaScript this value is dynamically scoped
+    "value of this" dynamically identified not in creation phase
+    
+Who supplies the value of this?
+
+   The value of this is determined and provided exactly by the caller
+   
+   "The function binding is decided on object  dynamically".     
+
+Browser:
+index.js
+function sayHello(){
+    return this;
+}
+console.log(sayHello())
+
+
+sayHello belong to whom?
+
+1.By default , in browser sayHello belong to window.
+
+
+Points:
+1.in non strict mode , this bound to window , I mean sayHello
+ is bound on window object by default. 
+2.In strict mode, this bound is decided by us based on object 
+  binding , meaning that function is free from any Object  binding default : this is recommended.
+
+
+Think: can "this" be bound with function "Creation phase"  
+       or can "this" be available in lexical scope?
+       or can "this" be available in static scope?
+                  No!
+
+
+Use case 1 : how to bind function dynamically  | how to initalze "this" dynamically"
+
+How to call function on objects dynamically?
+
+Function object provides  function binding apis
+1.call
+2.apply
+3.bind
+
+
+1.call(target,parameter1,parameter2...)
+
+function getCordinate(...name) {
+    console.log(`${name} => x is ${this.x} y ${this.y}`)
+}
+
+//No caller/ No target / No owner
+///getCordinate();
+//binding on Map
+const map = {
+    x: 1000,
+    y: 3888
+}
+
+"use strict"
+
+function sayHello() {
+    return this;
+}
+console.log(sayHello())
+console.log(window.sayHello())
+
+//1.call(target,parameter1,parameter2...)
+
+function getCordinate(...name) {
+    console.log(`${name} => x is ${this.x} y ${this.y}`)
+}
+//getCordinate()
+//owner
+const map = {
+    x: 1000,
+    y: 3888
+}
+//bind owner
+getCordinate.call(map, 'Google Map', 'google');
+//new Owner
+window.x = 90;
+window.y = 89;
+getCordinate.call(window, 'Browser', 'chrome')
+
+function getStocks(...stocks) {
+    console.log(`${this.name}`)
+    console.log(stocks);
+}
+
+const obj = {
+    name: 'google'
+};
+getStocks.apply(obj, [10, 20, 30, 40, 45]);
+
+///////////////////////////////////////////////////////////////
+function increment() {
+    return this.count++;
+}
+const CounterApp = {
+    count: 0
+}
+const inc = increment.bind(CounterApp);
+
+for (let i = 0; i < 10; i++) {
+    console.log('counter', inc())
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
+
+//"use strict"
+
+//basic use of nested function inisde object
+
+// const training= {
+//     teach: function(){
+//         function teachJS(){
+//             return this;
+//         }
+//         //console.log(teachJS.call(training));
+//         //console.log(teachJS.call(this));
+//     }
+// }
+// training.teach();
+
+const training = {
+    firstName: 'Subramanian',
+    teach: function () {
+        // console.log(this.firstName)
+        //learn function
+        let self = this;
+        return function () {
+            //console.log(`Trainer name ${this.firstName}`)
+           // console.log(`Trainer name ${self.firstName}`)
+           console.log(`Trainer name ${this.firstName}`)
+        }
+    }
+}
+let learn = training.teach();
+learn.call(training)
+//////////////////////////////////////////////////////////////////////////////////////////
+
+Arrow and this:
+
+The owner of this is fixed lexcially/statically.
+
+Whether code in strict or non strict mode.
+
+const sayHello =()=>{
+    return this;
+}
+console.log(sayHello());
+"use strict"
+
+const sayHello = () => {
+    return this;
+}
+console.log(sayHello());
+
+const training = {
+    firstName: 'Subramanian',
+    teach: function () {
+        return () => {
+            console.log(`Trainer name ${this.firstName}`)
+        }
+    }
+}
+let learn = training.teach();
+//learn.call(training)
+learn();
+//////////////////////////////////////////////////////////////////////////////////////////
+
+//quiz
+const video = {
+    genere: "Sc fi",
+    list: ['a1', 'b1', 'c1'],
+    findMovies() {
+        // var self = this;
+        // this.list.forEach(function (movie, index) {
+        //     console.log(self.genere, movie)
+        // })
+        this.list.forEach((movie, index) => {
+            console.log(this.genere, movie)
+        })
+    }
+};
+video.findMovies();
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+Prototype:
+ Every object, when is created, receives its prototype. 
+If the prototype is not set explicitly, objects receive default prototype as their inheritance object.
+
+Delegation/Proxy Design pattern:
+
+Use case 1
+The job is not done by the Program(Object) itself rather dispatch/delegates to other objects
+ eg: async arch.
+
+Use case 2
+In js Prototype is delegation object used for shared properties.(Inheritance).
+ This type of inheritance is called as "Prototypical  inheritance"
+
+
+A prototype is a delegation object used to implement prototype-based inheritance.
+
+The prototype can be set explicitly via either the __proto__ property, or Object.create method:
+
+A prototype chain
+
+Prototype objects are also just simple objects and may have their own prototypes. If a prototype has a non-null reference to its prototype, and so on, this is called the prototype chain.
+
+A prototype chain is a finite chain of objects which is used to implement inheritance and shared properties.
+............................................................................................
+
+
+How to know the prototype(Parent) of an Object?
+
+Two views:
+
+1.From Function Object perspective:Context Level
+
+    FunctionName.prototype
+console.log(Employee.prototype);
+
+2.From Instance Perspective:Runtime
+emp.__proto__
+Api: Object.getPrototypeOf(emp)
+
+
+If you want link two objects 
+  ->__proto__ you can use but it is not ECMA Standard
+  ->Object.create is utilty api used to link two objects -ECMA     Standard
+
+
+
+Property Lookup:
+...............
+When trying to access a property of an object, the property will not only be sought on the object but on the prototype of the object, the prototype of the prototype, and so on until either a property with a matching name is found or the end of the prototype chain is reached.
+
+Lookup chain:
+Prop--->parent 1--->parent 2--->parent 3--->parent n-- | null
+
+object.__proto__:Object
+           |
+           object.__proto__:Object
+  	   |
+	           object.__proto__:null
+
+If property not found any object in the chain, it will return undefined.
+ obj.x--->not p-->not p-->Object-->undefined
+
+
+Performance:
+   When we lookup property it starts apply lookup algorthim
+this gives negative impative on performance.
+
+
+Object.hasOwnProperty is the only thing in JavaScript which deals with properties and does not traverse the prototype chain.
+
+console.log(g.hasOwnProperty('vertices'));
+// true
+
+console.log(g.hasOwnProperty('nope'));
+// false
+
+console.log(g.hasOwnProperty('addVertex'));
+// false
+
+console.log(g.__proto__.hasOwnProperty('addVertex'));
+// true
+
+..................................................................................
+
+How to link two objects:
+
+Child.prototype  = Object.create(Parent.prototype)
+   
+
+Can you redefine(override) Object's Prototype methods?
+
+Object.prototype.create = ? =>dont
+
+Can you add global Apis for all instances in your application.
+
+Yes!
+Object.prototype.myapi = ?
+a.myapi()
+
+
+cont a = {}
+
+a.id =9
+
+
+
+function Person(name = 'default') {
+    console.log('Person is called')
+    this.name = name;
+}
+Person.prototype.sayGreet = function () {
+    return 'greet'
+}
+Person.prototype.salary = 8000;
+
+function Employee(name) {
+    Person.call(this, name); // super
+    console.log('Employee is called')
+}
+//Linking Objects : establishing inheritance:
+Employee.prototype = Object.create(Person.prototype);
+console.log(Employee.prototype);
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Event Driven Programming:
+
+
+Program to Program communication : distributed computing
+ 
+  Program-------| NAT ,RabbitMQ,Redis,Kaffka.... |---------------------program
+
+
+
+Within Program
+
+
+Use cases :
+
+1.distributed enterprise apps
+2.all ui programs are event driven
+3.Evented io: nodejs
+
+
+const EventEmitter = require('events');
+
+//producer + subscriber
+const events = new EventEmitter();
+
+//Subscribers
+events.on('hello', function (data) {
+    console.log(`Hello ${data}`);
+});
+
+//Producer
+events.emit('hello', 'Subramanian')
+events.emit('hello', 'Ram')
+
+////////////////////////////////////////////////////////////////////////////////
+
+//Async event driven
+class Inventory extends EventEmitter {
+    constructor() {
+        super();
+        this.on('sale', function (product) {
+            setImmediate(() => {
+                console.log('this happens asynchronously',product);
+            });
+        });
+    }
+    //biz apis
+    sale(product) {
+        //
+        this.emit('sale', product)
+    }
+}
+const inv = new Inventory();
+for (let i = 0; i < 10; i++) {
+    inv.sale({ id: i, name: `Product-${i}` });
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////
+
+Typescript:
+
+1.Coffee Script
+  How to bring oo models in javascript.
+
+2010
+
+  MS started project typed js from C#.
+2012 : ES 6 Spec
+   classes
+
+TS
+ -ES 6 Spec
+
+Typescript is javascript complementary not replacement.
+
+ Typescript  =  ES 6 + Extra features(compile time type checking looks like strongly typed lanaguage.)
+
+Typescript offers:
+
+1.strongly type system
+2.generics
+3.decorators
+4.oo features : di,overloading,overriding.
+etc....
+
+Decorators:
+..........
+meta programming.
+
+it is code, to be injected into another code during runtime.
+
+
+npm i typescript -g
+vs
+npm i typescript --save-dev
+
+
+Decorators:
+
+decorator declaration
+
+1.simple javascript function
+function Course(){
+  
+}
+2.decorator must take arg
+
+
+decorator injection
+
+@Decorator
+
+1.on class :
+  class level decorator
+2.method 
+   method level decorator
+3.on variable
+   field level decorator.
+
+
+Use case 1:
+
+//decorator declartion.
+function Course(target: any) {
+    //biz logic
+    Object.defineProperty(target.prototype, 'courseName', { value: 'Typescript' })
+}
+
+//decorator injection 
+
+@Course
+class Student {
+    constructor(public firstName: string, public lastName: string) { }
+}
+let student= new Student('Subramanian', 'Murugan') as any;
+console.log(`${student.firstName} ${student.lastName} is learning ${student.courseName}`)
+
+
+
+Use case 2:
+
+How to pass to input to decorator and with multi decorator.
+
+//decorator declartion
+//use case 1 : without any input
+// function Course(target: any) {
+//     //biz logic
+//     Object.defineProperty(target.prototype, 'courseName', { value: 'Typescript' })
+// }
+
+function Course(courseName: string = 'Type Script') {
+
+    return function (target: any) {
+        //biz logic
+        Object.defineProperty(target.prototype, 'courseName', { value: courseName })
+    }
+
+}
+function Logger(config: any) {
+    return function (target: any) {
+        console.log("\x1b[44m%s\x1b[0m", `${config.type} - ${config.message} on ${new Date()}`);
+    }
+}
+
+//decorator injection 
+@Logger({
+    message: 'Have latest Version',
+    type: 'Warning'
+})
+@Course('C++')
+class Student {
+    constructor(public firstName: string, public lastName: string) { }
+}
+let student = new Student('Subramanian', 'Murugan') as any;
+console.log(`${student.firstName} ${student.lastName} is learning ${student.courseName}`)
+
+
+Use case 3 : how to create field level decorator.
+
+
+//decorator declartion
+//use case 1 : without any input
+// function Course(target: any) {
+//     //biz logic
+//     Object.defineProperty(target.prototype, 'courseName', { value: 'Typescript' })
+// }
+
+function Course(courseName: string = 'Type Script') {
+
+    return function (target: any) {
+        //biz logic
+        Object.defineProperty(target.prototype, 'courseName', { value: courseName })
+    }
+
+}
+function Logger(config: any) {
+    return function (target: any) {
+        console.log("\x1b[44m%s\x1b[0m", `${config.type} - ${config.message} on ${new Date()}`);
+    }
+}
+
+function Input(label: string) {
+    return function (target: any, key: string) {
+        Object.defineProperty(target, key, {
+            configurable: false,
+            get: () => label
+        });
+    }
+}
+
+//decorator injection 
+@Logger({
+    message: 'Have latest Version',
+    type: 'Warning'
+})
+@Course('C++')
+class Student {
+    @Input('Brendan')
+    firstName;
+    lastName;
+    constructor(firstName?: string, lastName: string = '') {
+        this.firstName = firstName
+        this.lastName = lastName;
+    }
+}
+let student = new Student() as any;
+console.log(`${student.firstName} ${student.lastName} is learning ${student.courseName}`)
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+Use case  how to decorate a method:Method Level Decorator:
+.........................................................
+
+
+//decorator declartion
+//use case 1 : without any input
+// function Course(target: any) {
+//     //biz logic
+//     Object.defineProperty(target.prototype, 'courseName', { value: 'Typescript' })
+// }
+
+function Course(courseName: string = 'Type Script') {
+
+    return function (target: any) {
+        //biz logic
+        Object.defineProperty(target.prototype, 'courseName', { value: courseName })
+    }
+
+}
+function Logger(config: any) {
+    return function (target: any) {
+        console.log("\x1b[44m%s\x1b[0m", `${config.type} - ${config.message} on ${new Date()}`);
+    }
+}
+
+function Input(label: string) {
+    return function (target: any, key: string) {
+        Object.defineProperty(target, key, {
+            configurable: false,
+            get: () => label
+        });
+    }
+}
+function extendAble(value: any) {
+    return function (target: any, prop: any, propdescriptor: PropertyDescriptor) {
+        //console.log(target, prop, propdescriptor);
+        propdescriptor.writable = value;
+    }
+}
+//decorator injection 
+@Logger({
+    message: 'Have latest Version',
+    type: 'Warning'
+})
+@Course('C++')
+class Student {
+    @Input('Brendan')
+    firstName;
+    lastName;
+    constructor(firstName?: string, lastName: string = '') {
+        this.firstName = firstName
+        this.lastName = lastName;
+    }
+    @extendAble(true)
+    calculateCost() {
+        return 1000;
+    }
+}
+let student = new Student() as any;
+console.log(`${student.firstName} ${student.lastName} is learning ${student.courseName}`)
+student.calculateCost = function () {
+    return 20000;
+}
+console.log(`Cost : ${student.calculateCost()}`)
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+Typescript modularity:
+
+Typescript introduced its own module system
+
+1.interal modules :
+    logically organize code.
+
+ module,namespace.
+
+steps:
+
+1.split code file wise
+
+namespace Drawing { 
+    export interface IShape { 
+       draw(); 
+    }
+
+ } 
+2.link the files
+  triple slash syntax
+ src/Circle.ts
+/// <reference path = "IShape.ts" /> 
+namespace Drawing {
+    export class Circle implements IShape {
+        public draw() {
+            console.log("Circle is drawn");
+        }
+    }
+}  
+
+3.compile all the files together , bundle it , run.
+
+"compile" : "tsc --out ./build/app.js ./src/TestShape.ts "
+
+
+
+src/IShape.ts 
+namespace Drawing { 
+    export interface IShape { 
+       draw(); 
+    }
+ } 
+
+src/Circle.ts
+/// <reference path = "IShape.ts" /> 
+namespace Drawing {
+    export class Circle implements IShape {
+        public draw() {
+            console.log("Circle is drawn");
+        }
+    }
+}  
+
+src/Triangle.ts
+/// <reference path = "IShape.ts" /> 
+namespace Drawing {
+    export class Triangle implements IShape {
+        public draw() {
+            console.log("Triangle is drawn");
+        }
+    }
+}
+src/Test.ts
+
+/// <reference path = "IShape.ts" />   
+/// <reference path = "Circle.ts" /> 
+/// <reference path = "Triangle.ts" />  
+function drawAllShapes(shape: Drawing.IShape) {
+    shape.draw();
+}
+drawAllShapes(new Drawing.Circle());
+drawAllShapes(new Drawing.Triangle());
+
+Compile:
+
+    "compile" : "tsc --out ./build/app.js ./src/TestShape.ts "
+
+Note: out flage must be used , else it wont run.
+
+node build/app.js
+//////////////////////////////////////////////////////////////////////////////////////////
+
+Dependency Injection:
+//di
+
+class Product {
+     constructor(){
+         console.log('Product constructor is called')
+     }
+}
+class Order {
+    //di
+    constructor(product: Product) {  
+        console.log(product);
+     }
+     placeOrder(){
+
+     }
+}
+
+class Dog{
+    constructor(){}
+    bark(){
+
+    }
+}
+
+let product = new Product();
+let order=new Order(product)
+let order1 = new Order(new Dog())
+////////////////////////////////////////////////////////////////////////////////////////////
+
+Polymorphism:Typing:
+
+1.compile time
+  -overloading
+
+
+2.runtime 
+  -overriding : redefining.
+
+
+Overloading:
+
+overloading:
+When you overload in TypeScript,
+you only have one implementation with multiple signatures
+
+Steps :
+
+1.declare functions/methods inside class -no implementation
+
+function add(a: string, b: string): string;
+function add(a: number, b: number): number;
+function add(a: number, b: string): number;
+
+2.Implementation
+
+function add(a: any, b: any): any {
+    return a + b;
+}
+
+
+
+//function overloading
+function add(a: string, b: string): string;
+function add(a: number, b: number): number;
+function add(a: number, b: string): number;
+
+
+function add(a: any, b: any): any {
+    return a + b;
+}
+console.log(add("Hello ", "Subramanian")); // returns "Hello Subramanian" 
+console.log(add(10, 20)); // returns 30 
+
+class MathApi {
+    //method overloading
+    add(a: string, b: string): string;
+    add(a: number, b: number): number;
+    add(a: number, b: string): number;
+    add(a: any, b: any): string | number {
+        return a + b;
+    }
+}
+let math = new MathApi();
+console.log(math.add("Hello ", "Ram")); // returns "Hello Subramanian" 
+console.log(math.add(10, 30)); // returns 30 
+
+class Utility {
+    //method overloading
+    static add(a: string, b: string): string;
+    static add(a: number, b: number): number;
+    static add(a: number, b: string): number;
+    static add(a: any, b: any): string | number {
+        return a + b;
+    }
+}
+console.log(Utility.add("Hello ", "Ram")); // returns "Hello Subramanian" 
+console.log(Utility.add(10, 30)); // returns 30 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

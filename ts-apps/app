@@ -1,0 +1,19 @@
+System.register("greeternamespace", [], function (exports_1, context_1) {
+    "use strict";
+    var Greeter;
+    var __moduleName = context_1 && context_1.id;
+    return {
+        setters: [],
+        execute: function () {
+            (function (Greeter) {
+                function sayHello() {
+                    return 'Hello Namesapce';
+                }
+                Greeter.sayHello = sayHello;
+            })(Greeter || (Greeter = {}));
+            exports_1("Greeter", Greeter);
+        }
+    };
+});
+/// <reference path="greeternamespace.ts"/>
+console.log(Greeter.sayHello());
